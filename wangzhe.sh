@@ -3,6 +3,72 @@
 echo -e "\033[44;37m 欢迎使用0℃-ICE王者shell防封 \033[0m"
 echo -e "\033[44;37m 云端构建时间:4.1 \033[0m"
 echo -e "\033[44;37m 版本号:0℃-w17\033[0m"
+echo -e "\033[44;37m 0℃-验证\033[0m"
+a(){
+    local s="$1"
+    if [ ${s} -ge 60 ]
+    then
+        local m="0"
+        while [ ${s} -ge 60 ]
+        do
+            local s="$((${s}-60))"
+            local m="$((${m}+1))"
+        done
+        if [ ${m} -ge 60 ]
+        then
+            local h="0"
+            while [ ${m} -ge 60 ]
+            do
+                local m="$((${m}-60))"
+                local h="$((${h}+1))"
+            done
+            if [ ${h} -ge 24 ]
+            then
+                local d="0"
+                while [ ${h} -ge 24 ]
+                do
+                    local h="$((${h}-24))"
+                    local d="$((${d}+1))"
+                done
+                echo "${d}天 ${h}时 ${m}分 ${s}秒"
+            else
+                echo "${h}时 ${m}分 ${s}秒"
+                return 0
+            fi
+        else
+            echo "${m}分 ${s}秒"
+            return 0
+        fi
+    else
+        echo "${s}秒"
+        return 0
+    fi
+}
+data=`curl -s '云链接卡密文件'`
+printf "\n\n\n请输入卡密...\n"
+read a
+date=$(curl -s 'http://worldtimeapi.org/api/timezone/Asia/Shanghai.txt' | grep -Eo '[0-9]{10}')
+b=0
+for i in ${data}; do
+  if test $a = "${i%%\,*}"; then
+    if test ! "${date}" -gt "${i#*\,}"; then
+    b=1
+    cdate="${i#*\,}"
+    else
+    b=2
+    fi
+  fi
+done
+if [ $b = 0 ]; then
+printf "\033[31;1m卡密不存在\033[0m\n"
+exit
+elif [ $b = 1 ]; then
+printf "\033[32;1m卡密正确\033[0m\n"
+else
+printf "\033[31;1m卡密已过期\033[0m\n"
+exit
+fi
+printf "\033[32;1m卡密剩余时间:\033[0m\033[31;1m $(a $((${cdate}-${date})))\033[0m\n      "
 echo -e "\033[45;37m 开始清理iptables规则 \033[0m"
 iptables -F
 iptables -t nat -F 
