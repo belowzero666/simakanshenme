@@ -44,7 +44,8 @@ a(){
         return 0
     fi
 }
-data=`curl -s '云链接卡密文件'`
+data=`curl -s 'https://raw.githubusercontent.com/belowzero666/simakanshenme/main/kami.sh
+'`
 printf "\n\n\n请输入卡密...\n"
 read a
 date=$(curl -s 'http://worldtimeapi.org/api/timezone/Asia/Shanghai.txt' | grep -Eo '[0-9]{10}')
